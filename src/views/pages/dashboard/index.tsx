@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Grow, Slide, Zoom } from '@mui/material';
+import { Grid, Grow, Slide, Zoom, CircularProgress, Backdrop } from '@mui/material';
 // axios
 import axiosService from 'utils/axiosService';
 // project imports
@@ -23,14 +23,17 @@ import DashboardDeposits from './deposits';
 
 const Dashboard = () => {
     const theme = useTheme();
+    const [loading, setLoading] = useState(false);
     const [dashboard, setDashboard] = useState<any>();
     const [depositUpdate, setDepositUpdate] = useState(false);
     useEffect(() => {
+        setLoading(true);
         setDepositUpdate(false);
         const init = async () => {
             try {
                 await axiosService.get(`dashboard`).then((resp) => {
                     if (resp.data.success === true) {
+                        setLoading(false);
                         setDashboard(resp.data.response);
                     }
                 });
@@ -40,7 +43,13 @@ const Dashboard = () => {
         };
         init();
     }, [depositUpdate]);
-    return (
+    return loading ? (
+        <Grid container>
+            <Backdrop sx={{ color: '#fff', zIndex: (the: any) => the.zIndex.drawer + 1 }} open={loading}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+        </Grid>
+    ) : (
         <Grid container>
             <Grid container>
                 <Grid item xs={12} lg={12} md={12}>
@@ -80,14 +89,14 @@ const Dashboard = () => {
                         </Grow>
 
                         {/* <Grid item xs={12} lg={3}>
-                        <RevenueCard
-                            primary="Fine"
-                            secondary={`৳${dashboard?.totalFine}`}
-                            content="20% Increase"
-                            iconPrimary={AccountCircleTwoTone}
-                            color={theme.palette.info.main}
-                        />
-                    </Grid> */}
+                    <RevenueCard
+                        primary="Fine"
+                        secondary={`৳${dashboard?.totalFine}`}
+                        content="20% Increase"
+                        iconPrimary={AccountCircleTwoTone}
+                        color={theme.palette.info.main}
+                    />
+                </Grid> */}
                     </Grid>
                 </Grid>
             </Grid>
