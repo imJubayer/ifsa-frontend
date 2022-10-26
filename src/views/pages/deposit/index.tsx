@@ -62,6 +62,7 @@ const Deposits = () => {
     const [depositGenerated, setDepositGenerated] = useState(false);
     const [open, setOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [depositUpdate, setDepositUpdate] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -77,6 +78,7 @@ const Deposits = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 handleStatus(index, id);
+                setDepositUpdate(true);
                 deposits[index].status === 0 && Swal.fire('Approved!', 'Deposit has been approved.', 'success');
             }
         });
@@ -195,7 +197,7 @@ const Deposits = () => {
             name: 'account_type',
             label: 'Account type',
             options: {
-                filter: true,
+                filter: false,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
@@ -212,7 +214,7 @@ const Deposits = () => {
             name: 'amount',
             label: 'Amount',
             options: {
-                filter: true,
+                filter: false,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
@@ -238,7 +240,7 @@ const Deposits = () => {
             name: 'fine',
             label: 'Fine',
             options: {
-                filter: true,
+                filter: false,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
@@ -251,7 +253,7 @@ const Deposits = () => {
             name: 'fund_raising',
             label: 'Fund Raising',
             options: {
-                filter: true,
+                filter: false,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
@@ -372,9 +374,13 @@ const Deposits = () => {
     useEffect(() => {
         const init = async () => {
             setLoading(true);
+            setDepositUpdate(false);
             try {
                 await axiosService.get(`deposits?month=${month}&year=${year}`).then((resp) => {
                     if (resp.data.success === true) {
+                        resp.data.response.forEach((deposit: any) => {
+                            deposit.name = deposit.user.name;
+                        });
                         setDeposits(resp.data.response);
                         setLoading(false);
                     }
@@ -385,7 +391,7 @@ const Deposits = () => {
             }
         };
         init();
-    }, [month, year, depositGenerated]);
+    }, [month, year, depositGenerated, depositUpdate]);
 
     const HeaderElements = () => (
         <Grid container spacing={2}>
