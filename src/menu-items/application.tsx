@@ -40,7 +40,7 @@ const icons = {
 const application = {
     id: 'application',
     title: <FormattedMessage id="application" />,
-    type: 'group',
+    type: 'superadmin',
     accessibleFor: 'superadmin',
     children: [
         {

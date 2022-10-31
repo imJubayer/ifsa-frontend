@@ -42,7 +42,7 @@ export interface DashboardMenuProps {
 const dashboard: DashboardMenuProps = {
     id: 'dashboard',
     title: <FormattedMessage id="dashboard" />,
-    type: 'group',
+    type: 'all',
     children: [
         {
             id: 'dashboard',
