@@ -1,8 +1,19 @@
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 // material-ui
-import { styled } from '@mui/material/styles';
-import { Grid, IconButton, Typography, CircularProgress, Backdrop, Button, Tooltip, TextField, MenuItem, Paper } from '@mui/material';
+import {
+    Grid,
+    IconButton,
+    Typography,
+    CircularProgress,
+    Backdrop,
+    Button,
+    Tooltip,
+    TextField,
+    MenuItem,
+    Card,
+    CardContent
+} from '@mui/material';
 // import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MUIDataTable from 'mui-datatables';
 // project imports
@@ -29,16 +40,6 @@ declare module '@mui/material/styles' {
         [key: string]: any;
     }
 }
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    height: 80,
-    // minHeight: 100,
-    color: theme.palette.text.secondary
-}));
 
 // function getMuiTheme() {
 //     return createTheme({
@@ -458,48 +459,50 @@ const Deposits = () => {
         <>
             <Grid container justifyContent="center" alignItems="center">
                 <Grid item xs={12} marginBottom={2}>
-                    <Item>
-                        <Grid container marginTop={2} columnSpacing={{ md: 4, lg: 4, xs: 1 }}>
-                            <Grid item xs={4} md={5}>
-                                <TextField
-                                    id="outlined-select"
-                                    select
-                                    label="Month"
-                                    variant="outlined"
-                                    value={month}
-                                    fullWidth
-                                    size="small"
-                                    onChange={(e: any) => setMonth(e.target.value)}
-                                >
-                                    {months.map((option: any) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
+                    <Card>
+                        <CardContent>
+                            <Grid container spacing={2} justifyContent="flex-start" alignItems="center">
+                                <Grid item xs={4}>
+                                    <TextField
+                                        id="outlined-select"
+                                        select
+                                        label="Month"
+                                        variant="outlined"
+                                        value={month}
+                                        fullWidth
+                                        size="small"
+                                        onChange={(e: any) => setMonth(e.target.value)}
+                                    >
+                                        {months.map((option: any) => (
+                                            <MenuItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <TextField
+                                        id="outlined-basic"
+                                        select
+                                        label="Year"
+                                        variant="outlined"
+                                        value={year}
+                                        fullWidth
+                                        size="small"
+                                        onChange={(e: any) => setYear(e.target.value)}
+                                    >
+                                        <MenuItem value={2022}>2022</MenuItem>
+                                        <MenuItem value={2023}>2023</MenuItem>
+                                    </TextField>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Button variant="contained" onClick={handleGenerateDeposit}>
+                                        Generate Deposit
+                                    </Button>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={4} md={5}>
-                                <TextField
-                                    id="outlined-basic"
-                                    select
-                                    label="Year"
-                                    variant="outlined"
-                                    value={year}
-                                    fullWidth
-                                    size="small"
-                                    onChange={(e: any) => setYear(e.target.value)}
-                                >
-                                    <MenuItem value={2022}>2022</MenuItem>
-                                    <MenuItem value={2023}>2023</MenuItem>
-                                </TextField>
-                            </Grid>
-                            <Grid item xs={4} md={2}>
-                                <Button variant="contained" onClick={handleGenerateDeposit}>
-                                    Generate Deposit
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Item>
+                        </CardContent>
+                    </Card>
                 </Grid>
                 <Grid item xs={12}>
                     <MUIDataTable

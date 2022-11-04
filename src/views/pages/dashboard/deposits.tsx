@@ -6,6 +6,7 @@ import { Grid, IconButton, Typography, CircularProgress, Backdrop, Button, Toolt
 import MUIDataTable from 'mui-datatables';
 // project imports
 import Chip from 'ui-component/extended/Chip';
+import useAuth from 'hooks/useAuth';
 // axios
 import axiosService from 'utils/axiosService';
 
@@ -34,6 +35,7 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const approveAlert = (index: number, id: number) => {
         Swal.fire({
@@ -218,14 +220,14 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                             label="Paid"
                             size="small"
                             chipcolor="success"
-                            onClick={() => approveAlert(dataIndex, deposits[dataIndex].id)}
+                            onClick={() => (user?.role === 'superadmin' ? approveAlert(dataIndex, deposits[dataIndex].id) : '')}
                         />
                     ) : (
                         <Chip
                             label="Pending"
                             size="small"
                             chipcolor="warning"
-                            onClick={() => approveAlert(dataIndex, deposits[dataIndex].id)}
+                            onClick={() => (user?.role === 'superadmin' ? approveAlert(dataIndex, deposits[dataIndex].id) : '')}
                         />
                     )
             }

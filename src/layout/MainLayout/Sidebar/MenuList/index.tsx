@@ -34,7 +34,7 @@ const MenuList = () => {
             return <NavGroup key={item.id} item={item} />;
         }
         return (
-            <Typography key={item.id} variant="h6" color="error" align="center">
+            <Typography key={item.id} variant="h6" color="error" align="center" sx={{ display: 'none' }}>
                 End
             </Typography>
         );
