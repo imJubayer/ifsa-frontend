@@ -208,7 +208,7 @@ const Profile = ({ user }: ProfileProps) => {
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={12} sm={8}>
-                                                <Typography variant="subtitle1">Lot: {account.share.lot}</Typography>
+                                                <Typography variant="subtitle1">Share: {account.share.lot}</Typography>
                                                 <Typography variant="subtitle2">
                                                     Opened at - {moment(account.created_at).format('DD MMMM, YYYY')}
                                                 </Typography>

@@ -11,6 +11,8 @@ import axiosService from 'utils/axiosService';
 // Assets
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+// import LooksOneIcon from '@mui/icons-material/LooksOneRounded';
+// import LooksTwoIcon from '@mui/icons-material/LooksTwoRounded';
 
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
@@ -144,14 +146,34 @@ const Accounts = () => {
             }
         },
         {
+            name: 'share',
+            label: 'Share',
+            options: {
+                filter: true,
+                sort: true,
+                customBodyRenderLite: (dataIndex: any) => (
+                    <Typography variant="h5" gutterBottom>
+                        {accounts[dataIndex].share.lot}
+                    </Typography>
+                )
+            }
+        },
+        {
             name: 'account_type',
             label: 'Account type',
             options: {
                 filter: true,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any) => (
-                    <Typography variant="overline" gutterBottom>
-                        {accounts[dataIndex].account_type === 1 ? 'IFSA-1' : 'IFSA-2'}
+                    // <Typography variant="overline" gutterBottom>
+                    //     {accounts[dataIndex].account_type === 1 ? 'IFSA-1' : 'IFSA-2'}
+                    // </Typography>
+                    <Typography variant="h5" gutterBottom>
+                        {accounts[dataIndex].account_type === 1 ? (
+                            <Chip label="IFSA - 1" chipcolor="info" />
+                        ) : (
+                            <Chip label="IFSA - 2" chipcolor="secondary" />
+                        )}
                     </Typography>
                 )
             }
@@ -165,7 +187,7 @@ const Accounts = () => {
                 empty: true,
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
-                        {moment(accounts[dataIndex].created_at).format('LL')}
+                        {moment(accounts[dataIndex].created_at).format('DD MMM, YYYY')}
                     </Typography>
                 )
             }

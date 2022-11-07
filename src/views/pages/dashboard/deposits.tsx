@@ -6,13 +6,14 @@ import { Grid, IconButton, Typography, CircularProgress, Backdrop, Button, Toolt
 import MUIDataTable from 'mui-datatables';
 // project imports
 import Chip from 'ui-component/extended/Chip';
+import useAuth from 'hooks/useAuth';
 // axios
 import axiosService from 'utils/axiosService';
 
 // Assets
 import DetailsIcon from '@mui/icons-material/Details';
-import LooksOneIcon from '@mui/icons-material/LooksOneRounded';
-import LooksTwoIcon from '@mui/icons-material/LooksTwoRounded';
+// import LooksOneIcon from '@mui/icons-material/LooksOneRounded';
+// import LooksTwoIcon from '@mui/icons-material/LooksTwoRounded';
 
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
@@ -34,6 +35,7 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const approveAlert = (index: number, id: number) => {
         Swal.fire({
@@ -144,9 +146,9 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
                         {deposits[dataIndex].account.account_type === 1 ? (
-                            <Chip icon={<LooksOneIcon />} label="IFSA - 1" chipcolor="info" />
+                            <Chip label="IFSA - 1" chipcolor="info" />
                         ) : (
-                            <Chip icon={<LooksTwoIcon />} label="IFSA - 2" chipcolor="secondary" />
+                            <Chip label="IFSA - 2" chipcolor="secondary" />
                         )}
                     </Typography>
                 )
@@ -218,14 +220,14 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                             label="Paid"
                             size="small"
                             chipcolor="success"
-                            onClick={() => approveAlert(dataIndex, deposits[dataIndex].id)}
+                            onClick={() => (user?.role === 'superadmin' ? approveAlert(dataIndex, deposits[dataIndex].id) : '')}
                         />
                     ) : (
                         <Chip
                             label="Pending"
                             size="small"
                             chipcolor="warning"
-                            onClick={() => approveAlert(dataIndex, deposits[dataIndex].id)}
+                            onClick={() => (user?.role === 'superadmin' ? approveAlert(dataIndex, deposits[dataIndex].id) : '')}
                         />
                     )
             }

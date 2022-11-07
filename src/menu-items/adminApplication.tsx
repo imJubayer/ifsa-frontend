@@ -37,10 +37,10 @@ const icons = {
 
 // ==============================|| APPLICATION MENU ITEMS ||============================== //
 
-const application = {
+const adminApplication = {
     id: 'application',
     title: <FormattedMessage id="application" />,
-    type: 'group',
+    type: 'superadmin',
     accessibleFor: 'superadmin',
     children: [
         {
@@ -93,7 +93,7 @@ const application = {
             type: 'item',
             url: '/deposits',
             icon: icons.IconReportMoney,
-            breadcrumbs: true
+            breadcrumbs: false
         },
         {
             id: 'profit',
@@ -122,4 +122,4 @@ const application = {
     ]
 };
 
-export default application;
+export default adminApplication;
