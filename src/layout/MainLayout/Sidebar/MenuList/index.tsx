@@ -33,6 +33,9 @@ const MenuList = () => {
         if (item.type === 'all' && (user?.role === 'member' || user?.role === 'superadmin' || user?.role === 'admin')) {
             return <NavGroup key={item.id} item={item} />;
         }
+        if (item.type === 'member' && user?.role === 'member') {
+            return <NavGroup key={item.id} item={item} />;
+        }
         return (
             <Typography key={item.id} variant="h6" color="error" align="center" sx={{ display: 'none' }}>
                 End

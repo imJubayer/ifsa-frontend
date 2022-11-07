@@ -17,11 +17,19 @@ const other = {
     id: 'sample-docs-roadmap',
     type: 'group',
     children: [
+        // {
+        //     id: 'sample-page',
+        //     title: <FormattedMessage id="sample-page" />,
+        //     type: 'item',
+        //     url: '/sample-page',
+        //     icon: icons.IconBrandChrome,
+        //     breadcrumbs: false
+        // },
         {
-            id: 'sample-page',
-            title: <FormattedMessage id="sample-page" />,
+            id: 'profile',
+            title: <FormattedMessage id="profile" />,
             type: 'item',
-            url: '/sample-page',
+            url: '/profile',
             icon: icons.IconBrandChrome,
             breadcrumbs: false
         }

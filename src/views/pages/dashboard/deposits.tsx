@@ -12,8 +12,8 @@ import axiosService from 'utils/axiosService';
 
 // Assets
 import DetailsIcon from '@mui/icons-material/Details';
-import LooksOneIcon from '@mui/icons-material/LooksOneRounded';
-import LooksTwoIcon from '@mui/icons-material/LooksTwoRounded';
+// import LooksOneIcon from '@mui/icons-material/LooksOneRounded';
+// import LooksTwoIcon from '@mui/icons-material/LooksTwoRounded';
 
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
@@ -146,9 +146,9 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
                         {deposits[dataIndex].account.account_type === 1 ? (
-                            <Chip icon={<LooksOneIcon />} label="IFSA - 1" chipcolor="info" />
+                            <Chip label="IFSA - 1" chipcolor="info" />
                         ) : (
-                            <Chip icon={<LooksTwoIcon />} label="IFSA - 2" chipcolor="secondary" />
+                            <Chip label="IFSA - 2" chipcolor="secondary" />
                         )}
                     </Typography>
                 )

@@ -59,6 +59,10 @@ const MainRoutes = {
             element: <Deposit />
         },
         {
+            path: '/deposits/:userId',
+            element: <Deposit />
+        },
+        {
             path: '/accounts',
             element: <Accounts />
         },
