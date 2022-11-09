@@ -43,50 +43,6 @@ const memberApplication = {
     type: 'member',
     accessibleFor: 'member',
     children: [
-        // {
-        //     id: 'users',
-        //     title: <FormattedMessage id="users" />,
-        //     type: 'collapse',
-        //     icon: icons.IconUserCheck,
-        //     children: [
-        //         {
-        //             id: 'users',
-        //             title: <FormattedMessage id="users" />,
-        //             type: 'item',
-        //             url: '/user-list',
-        //             breadcrumbs: true
-        //         },
-        //         {
-        //             id: 'addUser',
-        //             title: <FormattedMessage id="addUser" />,
-        //             type: 'item',
-        //             url: '/add-user',
-        //             breadcrumbs: false
-        //         }
-        //     ]
-        // },
-        // {
-        //     id: 'account',
-        //     title: <FormattedMessage id="account" />,
-        //     type: 'collapse',
-        //     icon: icons.IconBasket,
-        //     children: [
-        //         {
-        //             id: 'accounts',
-        //             title: <FormattedMessage id="accounts" />,
-        //             type: 'item',
-        //             url: '/accounts',
-        //             breadcrumbs: false
-        //         },
-        //         {
-        //             id: 'addAccount',
-        //             title: <FormattedMessage id="addAccount" />,
-        //             type: 'item',
-        //             url: '/add-account',
-        //             breadcrumbs: false
-        //         }
-        //     ]
-        // },
         {
             id: 'deposits',
             title: <FormattedMessage id="deposits" />,
@@ -94,6 +50,14 @@ const memberApplication = {
             url: '/deposits',
             icon: icons.IconReportMoney,
             breadcrumbs: false
+        },
+        {
+            id: 'accounts',
+            title: <FormattedMessage id="accounts" />,
+            type: 'item',
+            url: '/accounts',
+            icon: icons.IconReportMoney,
+            breadcrumbs: true
         },
         {
             id: 'profit',
