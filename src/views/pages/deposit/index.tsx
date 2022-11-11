@@ -1,19 +1,30 @@
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 // material-ui
-import { Grid, IconButton, Typography, CircularProgress, Backdrop, Button, Tooltip, TextField, MenuItem } from '@mui/material';
+import {
+    Grid,
+    IconButton,
+    Typography,
+    CircularProgress,
+    Backdrop,
+    Button,
+    Tooltip,
+    TextField,
+    MenuItem,
+    Card,
+    CardContent
+} from '@mui/material';
 // import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MUIDataTable from 'mui-datatables';
 // project imports
 import Chip from 'ui-component/extended/Chip';
+import useAuth from 'hooks/useAuth';
 // axios
 import axiosService from 'utils/axiosService';
 
 // Assets
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import LooksOneIcon from '@mui/icons-material/LooksOneRounded';
-import LooksTwoIcon from '@mui/icons-material/LooksTwoRounded';
 
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
@@ -62,8 +73,10 @@ const Deposits = () => {
     const [depositGenerated, setDepositGenerated] = useState(false);
     const [open, setOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [depositUpdate, setDepositUpdate] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const approveAlert = (index: number, id: number) => {
         Swal.fire({
@@ -77,6 +90,7 @@ const Deposits = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 handleStatus(index, id);
+                setDepositUpdate(true);
                 deposits[index].status === 0 && Swal.fire('Approved!', 'Deposit has been approved.', 'success');
             }
         });
@@ -195,14 +209,14 @@ const Deposits = () => {
             name: 'account_type',
             label: 'Account type',
             options: {
-                filter: true,
+                filter: false,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
                         {deposits[dataIndex].account.account_type === 1 ? (
-                            <Chip icon={<LooksOneIcon />} label="IFSA - 1" chipcolor="info" />
+                            <Chip label="IFSA - 1" chipcolor="info" />
                         ) : (
-                            <Chip icon={<LooksTwoIcon />} label="IFSA - 2" chipcolor="secondary" />
+                            <Chip label="IFSA - 2" chipcolor="secondary" />
                         )}
                     </Typography>
                 )
@@ -212,7 +226,7 @@ const Deposits = () => {
             name: 'amount',
             label: 'Amount',
             options: {
-                filter: true,
+                filter: false,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
@@ -238,7 +252,7 @@ const Deposits = () => {
             name: 'fine',
             label: 'Fine',
             options: {
-                filter: true,
+                filter: false,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
@@ -251,7 +265,7 @@ const Deposits = () => {
             name: 'fund_raising',
             label: 'Fund Raising',
             options: {
-                filter: true,
+                filter: false,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
@@ -315,17 +329,23 @@ const Deposits = () => {
                 customBodyRenderLite: (dataIndex: any, rowData: any) =>
                     deposits[dataIndex].status ? (
                         <Chip
+                            title={user?.role && user.role === 'superadmin' && 'Click to disapprove'}
                             label="Paid"
                             size="small"
                             chipcolor="success"
-                            onClick={() => approveAlert(dataIndex, deposits[dataIndex].id)}
+                            onClick={() =>
+                                user?.role && user.role === 'superadmin' ? approveAlert(dataIndex, deposits[dataIndex].id) : ''
+                            }
                         />
                     ) : (
                         <Chip
+                            title={user?.role && user.role === 'superadmin' && 'Click to approve'}
                             label="Pending"
                             size="small"
                             chipcolor="warning"
-                            onClick={() => approveAlert(dataIndex, deposits[dataIndex].id)}
+                            onClick={() =>
+                                user?.role && user.role === 'superadmin' ? approveAlert(dataIndex, deposits[dataIndex].id) : ''
+                            }
                         />
                     )
             }
@@ -350,20 +370,22 @@ const Deposits = () => {
                                 <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Edit">
-                            <IconButton
-                                color="secondary"
-                                size="large"
-                                disabled={deposits[dataIndex].status}
-                                onClick={() => {
-                                    setDetails(deposits[dataIndex]);
-                                    // setDepositId();
-                                    setEditModalOpen(true);
-                                }}
-                            >
-                                <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                            </IconButton>
-                        </Tooltip>
+                        {user?.role && user?.role === 'superadmin' && (
+                            <Tooltip title="Edit">
+                                <IconButton
+                                    color="secondary"
+                                    size="large"
+                                    disabled={deposits[dataIndex].status}
+                                    onClick={() => {
+                                        setDetails(deposits[dataIndex]);
+                                        // setDepositId();
+                                        setEditModalOpen(true);
+                                    }}
+                                >
+                                    <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                                </IconButton>
+                            </Tooltip>
+                        )}
                     </>
                 )
             }
@@ -372,9 +394,13 @@ const Deposits = () => {
     useEffect(() => {
         const init = async () => {
             setLoading(true);
+            setDepositUpdate(false);
             try {
                 await axiosService.get(`deposits?month=${month}&year=${year}`).then((resp) => {
                     if (resp.data.success === true) {
+                        resp.data.response.forEach((deposit: any) => {
+                            deposit.name = deposit.user.name;
+                        });
                         setDeposits(resp.data.response);
                         setLoading(false);
                     }
@@ -385,61 +411,109 @@ const Deposits = () => {
             }
         };
         init();
-    }, [month, year, depositGenerated]);
+    }, [month, year, depositGenerated, depositUpdate]);
 
-    const HeaderElements = () => (
-        <Grid container spacing={2}>
-            <Grid item xs={4}>
-                <TextField
-                    id="outlined-select"
-                    select
-                    label="Month"
-                    variant="outlined"
-                    value={month}
-                    fullWidth
-                    size="small"
-                    onChange={(e: any) => setMonth(e.target.value)}
-                >
-                    {months.map((option: any) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            </Grid>
-            <Grid item xs={4}>
-                <TextField
-                    id="outlined-basic"
-                    select
-                    label="Year"
-                    variant="outlined"
-                    value={year}
-                    fullWidth
-                    size="small"
-                    onChange={(e: any) => setYear(e.target.value)}
-                >
-                    <MenuItem value={2022}>2022</MenuItem>
-                    <MenuItem value={2023}>2023</MenuItem>
-                </TextField>
-            </Grid>
-            <Grid item>
-                <Button variant="contained" onClick={handleGenerateDeposit}>
-                    Generate Deposit
-                </Button>
-            </Grid>
-        </Grid>
-    );
+    // const HeaderElements = () => (
+    //     <Grid container spacing={2}>
+    //         <Grid item xs={4}>
+    //             <TextField
+    //                 id="outlined-select"
+    //                 select
+    //                 label="Month"
+    //                 variant="outlined"
+    //                 value={month}
+    //                 fullWidth
+    //                 size="small"
+    //                 onChange={(e: any) => setMonth(e.target.value)}
+    //             >
+    //                 {months.map((option: any) => (
+    //                     <MenuItem key={option.value} value={option.value}>
+    //                         {option.label}
+    //                     </MenuItem>
+    //                 ))}
+    //             </TextField>
+    //         </Grid>
+    //         <Grid item xs={4}>
+    //             <TextField
+    //                 id="outlined-basic"
+    //                 select
+    //                 label="Year"
+    //                 variant="outlined"
+    //                 value={year}
+    //                 fullWidth
+    //                 size="small"
+    //                 onChange={(e: any) => setYear(e.target.value)}
+    //             >
+    //                 <MenuItem value={2022}>2022</MenuItem>
+    //                 <MenuItem value={2023}>2023</MenuItem>
+    //             </TextField>
+    //         </Grid>
+    //         <Grid item>
+    //             <Button variant="contained" onClick={handleGenerateDeposit}>
+    //                 Generate Deposit
+    //             </Button>
+    //         </Grid>
+    //     </Grid>
+    // );
 
     const options = {
         filterType: 'dropdown',
         print: false,
-        download: false,
+        download: false
         // resizableColumns: true,
-        customToolbar: () => <HeaderElements />
+        // customToolbar: () => <HeaderElements />
     };
     return (
         <>
-            <Grid container>
+            <Grid container justifyContent="center" alignItems="center">
+                {user?.role && (user.role === 'superadmin' || user.role === 'admin') && (
+                    <Grid item xs={12} marginBottom={2}>
+                        <Card>
+                            <CardContent>
+                                <Grid container spacing={2} justifyContent="flex-start" alignItems="center">
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            id="outlined-select"
+                                            select
+                                            label="Month"
+                                            variant="outlined"
+                                            value={month}
+                                            fullWidth
+                                            size="small"
+                                            onChange={(e: any) => setMonth(e.target.value)}
+                                        >
+                                            {months.map((option: any) => (
+                                                <MenuItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            id="outlined-basic"
+                                            select
+                                            label="Year"
+                                            variant="outlined"
+                                            value={year}
+                                            fullWidth
+                                            size="small"
+                                            onChange={(e: any) => setYear(e.target.value)}
+                                        >
+                                            <MenuItem value={2022}>2022</MenuItem>
+                                            <MenuItem value={2023}>2023</MenuItem>
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Button variant="contained" onClick={handleGenerateDeposit}>
+                                            Generate Deposit
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                )}
                 <Grid item xs={12}>
                     <MUIDataTable
                         title={

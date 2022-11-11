@@ -1,17 +1,16 @@
-import { useState } from 'react';
-import Swal from 'sweetalert2';
+import { useEffect, useState } from 'react';
 // material-ui
 import { Grid, IconButton, Typography, CircularProgress, Backdrop, Button, Tooltip } from '@mui/material';
 // import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MUIDataTable from 'mui-datatables';
 // project imports
 import Chip from 'ui-component/extended/Chip';
-import useAuth from 'hooks/useAuth';
 // axios
 import axiosService from 'utils/axiosService';
 
 // Assets
-import DetailsIcon from '@mui/icons-material/Details';
+import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 // import LooksOneIcon from '@mui/icons-material/LooksOneRounded';
 // import LooksTwoIcon from '@mui/icons-material/LooksTwoRounded';
 
@@ -26,42 +25,42 @@ declare module '@mui/material/styles' {
     }
 }
 
-type DepositPropsType = {
-    deposits: any;
-    setDepositUpdate: (value: boolean) => void;
-};
+// function getMuiTheme() {
+//     return createTheme({
+//         components: {
+//             MUIDataTableBodyCell: {
+//                 styleOverrides: {
+//                     root: {
+//                         textAlign: 'center'
+//                     }
+//                 }
+//             },
+//             MUIDataTableHeadCell: {
+//                 styleOverrides: {
+//                     fixedHeader: {
+//                         textAlign: 'center',
+//                         '&:nth-child(6)': {
+//                             paddingLeft: 125
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     });
+// }
 
-const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => {
+const AdminAccounts = () => {
     const [loading, setLoading] = useState(false);
+    const [accounts, setAccounts] = useState<any[]>([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { user } = useAuth();
-
-    const approveAlert = (index: number, id: number) => {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: deposits[index].status === 0 ? `Approve for IFSA ID-${deposits[index].ifsa_id}!` : 'Disapprove!!!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: deposits[index].status === 0 ? 'Yes, approve it!' : 'Yes, disapprove!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                handleStatus(index, id);
-                setDepositUpdate(true);
-                deposits[index].status === 0 && Swal.fire('Approved!', 'Deposit has been approved.', 'success');
-            }
-        });
-    };
     const handleStatus = (index: number, id: number) => {
         const init = async () => {
             setLoading(true);
             try {
-                await axiosService.get(`deposit/approve/${id}`).then((resp) => {
+                await axiosService.get(`account/change-status/${id}`).then((resp) => {
                     if (resp.data.success === true) {
-                        deposits[index].status = resp.data.response.status ? 1 : 0;
-                        deposits[index].aprroved_at = resp.data.response.approved_at;
+                        accounts[index].status = resp.data.response.status ? 1 : 0;
                         setLoading(false);
                         dispatch({
                             type: SNACKBAR_OPEN,
@@ -72,20 +71,13 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                         });
                     }
                 });
-            } catch (err: any) {
-                dispatch({
-                    type: SNACKBAR_OPEN,
-                    open: true,
-                    message: err.response.data.msg,
-                    variant: 'alert',
-                    alertSeverity: 'error'
-                });
+            } catch (e) {
+                console.log(e);
                 setLoading(false);
             }
         };
         init();
     };
-
     const columns = [
         {
             name: '#',
@@ -119,9 +111,9 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                                 <Button
                                     variant="text"
                                     size="small"
-                                    onClick={() => navigate(`/user/profile/${deposits[dataIndex].user.id}`)}
+                                    onClick={() => navigate(`/user/profile/${accounts[dataIndex].user.id}`)}
                                 >
-                                    {deposits[dataIndex].user.name}
+                                    {accounts[dataIndex].user.name}
                                 </Button>
                             </Typography>
                         </Grid>
@@ -129,12 +121,41 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                 )
             }
         },
+        // {
+        //     name: 'name',
+        //     label: 'Name',
+        //     options: {
+        //         filter: false,
+        //         sort: false,
+        //         empty: true,
+        //         customBodyRenderLite: (dataIndex: any) => (
+        //             <Typography variant="overline" gutterBottom>
+        //                 <Button variant="text" size="small" onClick={() => console.log(dataIndex)}>
+        //                     {users[dataIndex].name}
+        //                 </Button>
+        //             </Typography>
+        //         )
+        //     }
+        // },
         {
-            name: 'ifsa_id',
+            name: 'id',
             label: 'Ifsa ID',
             options: {
                 filter: true,
-                sort: false
+                sort: true
+            }
+        },
+        {
+            name: 'share',
+            label: 'Share',
+            options: {
+                filter: true,
+                sort: true,
+                customBodyRenderLite: (dataIndex: any) => (
+                    <Typography variant="h5" gutterBottom>
+                        {accounts[dataIndex].share.lot}
+                    </Typography>
+                )
             }
         },
         {
@@ -144,8 +165,11 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                 filter: true,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any) => (
-                    <Typography variant="overline" gutterBottom>
-                        {deposits[dataIndex].account.account_type === 1 ? (
+                    // <Typography variant="overline" gutterBottom>
+                    //     {accounts[dataIndex].account_type === 1 ? 'IFSA-1' : 'IFSA-2'}
+                    // </Typography>
+                    <Typography variant="h5" gutterBottom>
+                        {accounts[dataIndex].account_type === 1 ? (
                             <Chip label="IFSA - 1" chipcolor="info" />
                         ) : (
                             <Chip label="IFSA - 2" chipcolor="secondary" />
@@ -155,54 +179,15 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
             }
         },
         {
-            name: 'amount',
-            label: 'Amount',
-            options: {
-                filter: true,
-                sort: false,
-                customBodyRenderLite: (dataIndex: any) => (
-                    <Typography variant="overline" gutterBottom>
-                        <Chip label={`${deposits[dataIndex].amount}/-`} variant="filled" size="medium" chipcolor="info" />
-                    </Typography>
-                )
-            }
-        },
-        {
-            name: 'fine',
-            label: 'Fine',
-            options: {
-                filter: true,
-                sort: false,
-                customBodyRenderLite: (dataIndex: any) => (
-                    <Typography variant="overline" gutterBottom>
-                        <Chip label={`${deposits[dataIndex].fine}/-`} variant="filled" size="medium" chipcolor="error" />
-                    </Typography>
-                )
-            }
-        },
-        {
-            name: 'fund_raising',
-            label: 'Fund Raising',
-            options: {
-                filter: true,
-                sort: false,
-                customBodyRenderLite: (dataIndex: any) => (
-                    <Typography variant="overline" gutterBottom>
-                        <Chip label={`${deposits[dataIndex].fund_raising}/-`} variant="filled" size="medium" chipcolor="success" />
-                    </Typography>
-                )
-            }
-        },
-        {
-            name: 'deposit_for',
-            label: 'Deposit Month',
+            name: 'created_at',
+            label: 'Creation Date',
             options: {
                 filter: false,
-                sort: false,
+                sort: true,
                 empty: true,
                 customBodyRenderLite: (dataIndex: any) => (
                     <Typography variant="overline" gutterBottom>
-                        {moment(deposits[dataIndex].deposit_for).format('MMMM, YYYY')}
+                        {moment(accounts[dataIndex].created_at).format('DD MMM, YYYY')}
                     </Typography>
                 )
             }
@@ -215,19 +200,19 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                 sort: false,
                 empty: true,
                 customBodyRenderLite: (dataIndex: any, rowData: any) =>
-                    deposits[dataIndex].status ? (
+                    accounts[dataIndex].status === 1 ? (
                         <Chip
-                            label="Paid"
+                            label="Active"
                             size="small"
                             chipcolor="success"
-                            onClick={() => (user?.role === 'superadmin' ? approveAlert(dataIndex, deposits[dataIndex].id) : '')}
+                            onClick={() => handleStatus(dataIndex, accounts[dataIndex].id)}
                         />
                     ) : (
                         <Chip
                             label="Pending"
                             size="small"
                             chipcolor="warning"
-                            onClick={() => (user?.role === 'superadmin' ? approveAlert(dataIndex, deposits[dataIndex].id) : '')}
+                            onClick={() => handleStatus(dataIndex, accounts[dataIndex].id)}
                         />
                     )
             }
@@ -240,9 +225,14 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                 empty: true,
                 customBodyRenderLite: (dataIndex: any, rowData: any) => (
                     <>
-                        <Tooltip title="Details">
-                            <IconButton color="primary" size="large" onClick={() => navigate(`/deposits`)}>
-                                <DetailsIcon sx={{ fontSize: '1.3rem' }} />
+                        <Tooltip title="View">
+                            <IconButton color="primary" size="large">
+                                <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Edit">
+                            <IconButton color="secondary" size="large">
+                                <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
                             </IconButton>
                         </Tooltip>
                     </>
@@ -250,22 +240,37 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
             }
         }
     ];
+    useEffect(() => {
+        const init = async () => {
+            setLoading(true);
+            try {
+                await axiosService.get('accounts').then((resp) => {
+                    if (resp.data.success === true) {
+                        setAccounts(resp.data.response);
+                        setLoading(false);
+                    }
+                });
+            } catch (e) {
+                console.log(e);
+                setLoading(false);
+            }
+        };
+        init();
+    }, []);
 
     const options = {
-        filterType: 'dropdown',
-        print: false,
-        download: false
+        filterType: 'dropdown'
     };
     return (
-        <>
-            <Grid container>
-                <Grid item xs={12}>
+        <Grid container>
+            <Grid item xs={12}>
+                {/* <ThemeProvider theme={getMuiTheme}>
                     <MUIDataTable
                         title={
                             <Grid container marginY={2}>
                                 <Grid item marginY={2} xs={12}>
-                                    <Typography variant="h4">
-                                        Deposits{' '}
+                                    <Typography variant="h5">
+                                        Users{' '}
                                         <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
                                             <CircularProgress color="inherit" />
                                         </Backdrop>
@@ -273,15 +278,33 @@ const DashboardDeposits = ({ deposits, setDepositUpdate }: DepositPropsType) => 
                                 </Grid>
                             </Grid>
                         }
-                        data={deposits}
+                        data={users}
                         columns={columns}
                         options={options}
                         sx={{ margin: 2 }}
                     />
-                </Grid>
+                </ThemeProvider> */}
+                <MUIDataTable
+                    title={
+                        <Grid container marginY={2}>
+                            <Grid item marginY={2} xs={12}>
+                                <Typography variant="h5">
+                                    Accounts{' '}
+                                    <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+                                        <CircularProgress color="inherit" />
+                                    </Backdrop>
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    }
+                    data={accounts}
+                    columns={columns}
+                    options={options}
+                    sx={{ margin: 2 }}
+                />
             </Grid>
-        </>
+        </Grid>
     );
 };
 
-export default DashboardDeposits;
+export default AdminAccounts;

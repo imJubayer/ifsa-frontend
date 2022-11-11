@@ -60,7 +60,7 @@ export default function DepositDetailsDialog({ open, setOpen, details }: Deposit
                                 <PendingIcon color="warning" sx={{ fontSize: 40 }} />
                             )}
                         </Grid>
-                        <Grid item xs={12} sx={{ marginLeft: 8 }}>
+                        <Grid item xs={12}>
                             <TableContainer>
                                 <Table
                                     sx={{
