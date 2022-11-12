@@ -4,7 +4,6 @@ import MemberAccounts from './AccountsMember';
 
 const Accounts = () => {
     const { user } = useAuth();
-    console.log(user);
     return user && (user?.role === 'superadmin' || user?.role === 'admin') ? <AdminAccounts /> : <MemberAccounts />;
 };
 
