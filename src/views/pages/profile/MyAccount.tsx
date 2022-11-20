@@ -51,6 +51,7 @@ type AccountProps = {
 };
 
 const MyAccount = ({ user }: AccountProps) => {
+    console.log(user);
     const columns = [
         {
             name: '#',
@@ -165,7 +166,7 @@ const MyAccount = ({ user }: AccountProps) => {
                                         <Typography>IFSA-{account.id}</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <Typography variant="h5">{account.totalAmount}/-</Typography>
+                                        <Typography variant="h5">{account.amountDetails.totalAmount}/-</Typography>
                                     </Grid>
                                 </Grid>
                             </AccordionSummary>

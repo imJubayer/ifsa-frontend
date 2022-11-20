@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Grow, Slide, Zoom, CircularProgress, Backdrop } from '@mui/material';
+import { Grid, Grow, Slide, Zoom, CircularProgress, Backdrop, Theme } from '@mui/material';
 // axios
 import axiosService from 'utils/axiosService';
 // project imports
@@ -20,19 +20,21 @@ import MoneyOffIcon from '@mui/icons-material/MoneyOff';
 
 //
 import DashboardDeposits from './deposits';
+import { IDashboardData, TApiResponse } from 'types/common';
 
 const AdminDashboard = () => {
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
-    const [dashboard, setDashboard] = useState<any>();
+    const [dashboard, setDashboard] = useState<IDashboardData>();
     const [depositUpdate, setDepositUpdate] = useState(false);
+
     useEffect(() => {
         setLoading(false);
         setDepositUpdate(false);
         const init = async () => {
             try {
-                await axiosService.get(`dashboard`).then((resp) => {
-                    if (resp.data.success === true) {
+                await axiosService.get<TApiResponse<IDashboardData>>(`dashboard`).then((resp) => {
+                    if (resp.data.success) {
                         setLoading(false);
                         setDashboard(resp.data.response);
                     }
@@ -45,7 +47,7 @@ const AdminDashboard = () => {
     }, [depositUpdate]);
     return loading ? (
         <Grid container>
-            <Backdrop sx={{ color: '#fff', zIndex: (the: any) => the.zIndex.drawer + 1 }} open={loading}>
+            <Backdrop sx={{ color: '#fff', zIndex: (theme2: Theme) => theme2.zIndex.drawer + 1 }} open={loading}>
                 <CircularProgress color="inherit" />
             </Backdrop>
         </Grid>
@@ -105,7 +107,7 @@ const AdminDashboard = () => {
                     <Grid item xs={12} lg={3} sm={6}>
                         <HoverSocialCard
                             primary="Total Users"
-                            secondary={dashboard?.totalUsers}
+                            secondary={dashboard?.totalUsers.toFixed()}
                             iconPrimary={AccountCircleTwoTone}
                             color={theme.palette.secondary.main}
                         />
@@ -115,7 +117,7 @@ const AdminDashboard = () => {
                     <Grid item xs={12} lg={3} sm={6}>
                         <HoverSocialCard
                             primary="Total Account"
-                            secondary={dashboard?.totalAccounts}
+                            secondary={dashboard?.totalAccounts.toString()}
                             iconPrimary={SupervisedUserCircleIcon}
                             color={theme.palette.info.main}
                         />
@@ -125,7 +127,7 @@ const AdminDashboard = () => {
                     <Grid item xs={12} lg={3} sm={6}>
                         <HoverSocialCard
                             primary="IFSA-1 Account"
-                            secondary={dashboard?.ifsa1Accounts}
+                            secondary={dashboard?.ifsa1Accounts.toString()}
                             iconPrimary={LooksOneIcon}
                             color={theme.palette.dark.main}
                         />
@@ -135,7 +137,7 @@ const AdminDashboard = () => {
                     <Grid item xs={12} lg={3} sm={6}>
                         <HoverSocialCard
                             primary="IFSA-2 Account"
-                            secondary={dashboard?.ifsa2Accounts}
+                            secondary={dashboard?.ifsa2Accounts.toString()}
                             iconPrimary={LooksTwoIcon}
                             color={theme.palette.error.main}
                         />

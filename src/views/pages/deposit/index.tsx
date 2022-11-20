@@ -329,7 +329,7 @@ const Deposits = () => {
                 customBodyRenderLite: (dataIndex: any, rowData: any) =>
                     deposits[dataIndex].status ? (
                         <Chip
-                            title={user?.role && user.role === 'superadmin' && 'Click to disapprove'}
+                            title={user?.role && 'Click to disapprove'}
                             label="Paid"
                             size="small"
                             chipcolor="success"
@@ -339,7 +339,7 @@ const Deposits = () => {
                         />
                     ) : (
                         <Chip
-                            title={user?.role && user.role === 'superadmin' && 'Click to approve'}
+                            title={user?.role && 'Click to approve'}
                             label="Pending"
                             size="small"
                             chipcolor="warning"

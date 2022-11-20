@@ -29,7 +29,7 @@ const other = {
             id: 'profile',
             title: <FormattedMessage id="profile" />,
             type: 'item',
-            url: '/profile',
+            url: '/user/profile',
             icon: icons.IconBrandChrome,
             breadcrumbs: false
         }
