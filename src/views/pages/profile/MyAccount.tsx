@@ -51,7 +51,6 @@ type AccountProps = {
 };
 
 const MyAccount = ({ user }: AccountProps) => {
-    console.log(user);
     const columns = [
         {
             name: '#',

@@ -50,6 +50,7 @@ const tabsOption = [
         label: 'Personal Details',
         icon: <DescriptionTwoToneIcon sx={{ fontSize: '1.3rem' }} />
     },
+
     {
         label: 'My Account',
         icon: <LibraryBooksTwoToneIcon sx={{ fontSize: '1.3rem' }} />
@@ -136,7 +137,7 @@ const Profile1 = () => {
                         ))}
                     </Tabs>
                     <TabPanel value={value} index={0}>
-                        <Profile user={user} />
+                        <Profile />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
                         <PersonalAccount />

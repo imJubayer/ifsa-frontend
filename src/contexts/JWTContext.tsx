@@ -56,22 +56,6 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         const init = async () => {
             try {
                 const serviceToken = window.localStorage.getItem('serviceToken');
-
-                // await axiosService
-                //     .post('login', { phone, password })
-                //     .then((response) => {
-                //         setSession(response.data.response.token);
-                //         dispatch({
-                //             type: LOGIN,
-                //             payload: {
-                //                 isLoggedIn: true,
-                //                 user: response.data.response.user
-                //             }
-                //         });
-                //     })
-                //     .catch((e) => {
-                //         console.log(e.response);
-                //     });
                 if (serviceToken) {
                     setSession(serviceToken);
                     await axiosService
@@ -90,15 +74,6 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
                                 type: LOGOUT
                             });
                         });
-                    // const response = await axiosService.get('/profile');
-                    // const { user } = response.data;
-                    // dispatch({
-                    //     type: LOGIN,
-                    //     payload: {
-                    //         isLoggedIn: true,
-                    //         user
-                    //     }
-                    // });
                 } else {
                     dispatch({
                         type: LOGOUT
@@ -166,7 +141,39 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
 
     const resetPassword = (email: string) => console.log(email);
 
-    const updateProfile = () => {};
+    const updateProfile = () => {
+        try {
+            const serviceToken = window.localStorage.getItem('serviceToken');
+            if (serviceToken) {
+                setSession(serviceToken);
+                axiosService
+                    .get('profile')
+                    .then((response) => {
+                        dispatch({
+                            type: LOGIN,
+                            payload: {
+                                isLoggedIn: true,
+                                user: response.data.response
+                            }
+                        });
+                    })
+                    .catch((e) => {
+                        dispatch({
+                            type: LOGOUT
+                        });
+                    });
+            } else {
+                dispatch({
+                    type: LOGOUT
+                });
+            }
+        } catch (err) {
+            console.error(err);
+            dispatch({
+                type: LOGOUT
+            });
+        }
+    };
 
     if (state.isInitialized !== undefined && !state.isInitialized) {
         return <Loader />;

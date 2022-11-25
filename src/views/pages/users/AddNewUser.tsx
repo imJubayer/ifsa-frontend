@@ -120,7 +120,6 @@ const Register = ({ ...others }) => {
                     formData.append('address', values.address);
                     formData.append('password', values.password);
                     formData.append('profile_image', pp[0]);
-                    console.log(pp);
                     try {
                         await axiosService
                             .post(`addUser`, formData, {
