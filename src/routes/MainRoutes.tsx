@@ -11,6 +11,7 @@ const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 const Users = Loadable(lazy(() => import('views/pages/users')));
 const AddUser = Loadable(lazy(() => import('views/pages/users/AddNewUser')));
 const Profile = Loadable(lazy(() => import('views/pages/profile')));
+const UserProfile = Loadable(lazy(() => import('views/pages/user-profile')));
 const Deposit = Loadable(lazy(() => import('views/pages/deposit')));
 const Accounts = Loadable(lazy(() => import('views/pages/accounts')));
 const AddAccount = Loadable(lazy(() => import('views/pages/accounts/AddAccount')));
@@ -52,7 +53,7 @@ const MainRoutes = {
         },
         {
             path: '/user/profile/:id',
-            element: <Profile />
+            element: <UserProfile />
         },
         {
             path: '/deposits',

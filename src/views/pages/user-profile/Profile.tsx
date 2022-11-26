@@ -28,22 +28,32 @@ import { gridSpacing } from 'store/constant';
 // assets
 import { IconEdit } from '@tabler/icons';
 import PhonelinkRingTwoToneIcon from '@mui/icons-material/PhonelinkRingTwoTone';
-// import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
+import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
 import MailTwoToneIcon from '@mui/icons-material/MailTwoTone';
 
 // import Avatar3 from 'assets/images/users/avatar-3.png';
 import { IMAGEPATH } from 'utils/Constants';
-import useAuth from 'hooks/useAuth';
 
 // personal details table
 /** names Don&apos;t look right */
+function createData(name: string, calories?: string, fat?: string, carbs?: string, protein?: string) {
+    return { name, calories, fat, carbs, protein };
+}
 
 // ==============================|| PROFILE 1 - PROFILE ||============================== //
-// type ProfileProps = {
-//     user: any;
-// };
-const Profile = () => {
-    const { user } = useAuth();
+type ProfileProps = {
+    user: any;
+};
+const Profile = ({ user }: ProfileProps) => {
+    const rows = [
+        createData('Full Name', ':', user?.name),
+        createData('Father Name', ':', user?.father_name),
+        createData('Mother Name', ':', user?.mother_name),
+        createData('Address', ':', user?.address),
+        createData('Phone', ':', user?.phone),
+        createData('Email', ':', user?.email),
+        createData('National ID', ':', user?.national_id)
+    ];
     return (
         <Grid container spacing={gridSpacing}>
             <Grid item lg={4} xs={12}>
@@ -96,6 +106,17 @@ const Profile = () => {
                             </ListItemSecondaryAction>
                         </ListItemButton>
                         <Divider />
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <PinDropTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+                            </ListItemIcon>
+                            <ListItemText primary={<Typography variant="subtitle1">Location</Typography>} />
+                            <ListItemSecondaryAction>
+                                <Typography variant="subtitle2" align="right">
+                                    {user?.address}
+                                </Typography>
+                            </ListItemSecondaryAction>
+                        </ListItemButton>
                     </List>
                     <CardContent>
                         <Grid container spacing={0}>
@@ -140,9 +161,7 @@ const Profile = () => {
                         >
                             <Grid container direction="column" spacing={2}>
                                 <Grid item xs={12}>
-                                    <Typography variant="body2">
-                                        Hello, I’m {user?.name}. If anything needed please contact me in below info.
-                                    </Typography>
+                                    <Typography variant="body2">Hello, I’m {user.name}.</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Typography variant="subtitle1">Personal Details</Typography>
@@ -159,36 +178,13 @@ const Profile = () => {
                                             size="small"
                                         >
                                             <TableBody>
-                                                <TableRow>
-                                                    <TableCell variant="head">Name</TableCell>
-                                                    <TableCell>:</TableCell>
-                                                    <TableCell>{user?.name}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell variant="head">Father Name</TableCell>
-                                                    <TableCell>:</TableCell>
-                                                    <TableCell>{user?.father_name}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell variant="head">Mother Name</TableCell>
-                                                    <TableCell>:</TableCell>
-                                                    <TableCell>{user?.mother_name}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell variant="head">Address</TableCell>
-                                                    <TableCell>:</TableCell>
-                                                    <TableCell>{user?.address}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell variant="head">Gender</TableCell>
-                                                    <TableCell>:</TableCell>
-                                                    <TableCell>{user?.gender}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell variant="head">National ID</TableCell>
-                                                    <TableCell>:</TableCell>
-                                                    <TableCell>{user?.national_id}</TableCell>
-                                                </TableRow>
+                                                {rows.map((row, index) => (
+                                                    <TableRow key={row.name + index}>
+                                                        <TableCell variant="head">{row.name}</TableCell>
+                                                        <TableCell>{row.calories}</TableCell>
+                                                        <TableCell>{row.fat}</TableCell>
+                                                    </TableRow>
+                                                ))}
                                             </TableBody>
                                         </Table>
                                     </TableContainer>

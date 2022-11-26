@@ -7,6 +7,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MUIDataTable from 'mui-datatables';
 // project imports
 import Chip from 'ui-component/extended/Chip';
+import useAuth from 'hooks/useAuth';
 // axios
 import axiosService from 'utils/axiosService';
 
@@ -55,6 +56,8 @@ const Users = () => {
     const [users, setusers] = useState<any[]>([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { user } = useAuth();
+
     const handleStatus = (index: number, id: number) => {
         const init = async () => {
             setLoading(true);
@@ -105,7 +108,7 @@ const Users = () => {
                 filter: false,
                 sort: false,
                 customBodyRenderLite: (dataIndex: any, rowIndex: any) => (
-                    <Button onClick={() => navigate(`/user/profile/${users[dataIndex].id}`)}>
+                    <Button onClick={() => user?.role === 'superadmin' && navigate(`/user/profile/${users[dataIndex].id}`)}>
                         <Grid container spacing={2} alignItems="center">
                             <Grid item>
                                 <Avatar size="lg" alt={users[dataIndex].name} src={`${IMAGEPATH}${users[dataIndex].profile_image}`} />

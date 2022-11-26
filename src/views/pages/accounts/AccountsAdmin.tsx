@@ -5,6 +5,7 @@ import { Grid, IconButton, Typography, CircularProgress, Backdrop, Button, Toolt
 import MUIDataTable from 'mui-datatables';
 // project imports
 import Chip from 'ui-component/extended/Chip';
+import useAuth from 'hooks/useAuth';
 // axios
 import axiosService from 'utils/axiosService';
 
@@ -54,6 +55,7 @@ const AdminAccounts = () => {
     const [accounts, setAccounts] = useState<any[]>([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const handleStatus = (index: number, id: number) => {
         const init = async () => {
             setLoading(true);
@@ -111,7 +113,7 @@ const AdminAccounts = () => {
                                 <Button
                                     variant="text"
                                     size="small"
-                                    onClick={() => navigate(`/user/profile/${accounts[dataIndex].user.id}`)}
+                                    onClick={() => user?.role === 'superadmin' && navigate(`/user/profile/${accounts[dataIndex].user.id}`)}
                                 >
                                     {accounts[dataIndex].user.name}
                                 </Button>

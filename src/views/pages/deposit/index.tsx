@@ -187,7 +187,7 @@ const Deposits = () => {
                                 <Button
                                     variant="text"
                                     size="small"
-                                    onClick={() => navigate(`/user/profile/${deposits[dataIndex].user.id}`)}
+                                    onClick={() => user?.role === 'superadmin' && navigate(`/user/profile/${deposits[dataIndex].user.id}`)}
                                 >
                                     {deposits[dataIndex].user.name}
                                 </Button>
